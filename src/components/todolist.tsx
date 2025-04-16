@@ -74,18 +74,31 @@ export default function TodoList() {
       confirmButtonText: "Tambah",
       cancelButtonText: "Batal",
       preConfirm: () => {
-        return [
-          (document.getElementById("swal-input1") as HTMLInputElement)?.value,
-          (document.getElementById("swal-input2") as HTMLInputElement)?.value,
-        ];
+        const taskName = (
+          document.getElementById("swal-input1") as HTMLInputElement
+        )?.value;
+        const taskDeadline = (
+          document.getElementById("swal-input2") as HTMLInputElement
+        )?.value;
+
+        if (!taskName || !taskDeadline) {
+          Swal.showValidationMessage(
+            "Harap isi Nama Tugas dan Tanggal Deadline!"
+          );
+          return false; // Prevent form submission
+        }
+
+        return [taskName, taskDeadline];
       },
     });
 
-    if (formValues && formValues[0] && formValues[1]) {
+    if (formValues) {
+      const [taskName, taskDeadline] = formValues;
+
       const newTask: Omit<Task, "id"> = {
-        text: formValues[0],
+        text: taskName,
         completed: false,
-        deadline: formValues[1],
+        deadline: taskDeadline,
       };
       const docRef = await addDoc(collection(db, "tasks"), newTask);
       setTasks([...tasks, { id: docRef.id, ...newTask }]);
@@ -145,18 +158,31 @@ export default function TodoList() {
       confirmButtonText: "Simpan",
       cancelButtonText: "Batal",
       preConfirm: () => {
-        return [
-          (document.getElementById("swal-input1") as HTMLInputElement)?.value,
-          (document.getElementById("swal-input2") as HTMLInputElement)?.value,
-        ];
+        const taskName = (
+          document.getElementById("swal-input1") as HTMLInputElement
+        )?.value;
+        const taskDeadline = (
+          document.getElementById("swal-input2") as HTMLInputElement
+        )?.value;
+
+        if (!taskName || !taskDeadline) {
+          Swal.showValidationMessage(
+            "Harap isi Nama Tugas dan Tanggal Deadline!"
+          );
+          return false; // Prevent form submission
+        }
+
+        return [taskName, taskDeadline];
       },
     });
 
-    if (formValues && formValues[0] && formValues[1]) {
+    if (formValues) {
+      const [taskName, taskDeadline] = formValues;
+
       const updatedTask: Task = {
         ...task,
-        text: formValues[0],
-        deadline: formValues[1],
+        text: taskName,
+        deadline: taskDeadline,
       };
       await updateDoc(doc(db, "tasks", task.id), updatedTask);
       setTasks(

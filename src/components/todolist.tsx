@@ -104,8 +104,34 @@ export default function TodoList() {
   };
 
   const deleteTask = async (id: string): Promise<void> => {
-    await deleteDoc(doc(db, "tasks", id));
-    setTasks(tasks.filter((task) => task.id !== id));
+    const result = await Swal.fire({
+      title: "Yakin ingin menghapus?",
+      text: "Tugas ini akan dihapus secara permanen!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonText: "Ya, hapus!",
+      cancelButtonText: "Batal",
+      background: "#ffffff",
+      color: "#333333",
+      confirmButtonColor: "#d33",
+      cancelButtonColor: "#3085d6",
+    });
+
+    if (result.isConfirmed) {
+      await deleteDoc(doc(db, "tasks", id));
+      setTasks(tasks.filter((task) => task.id !== id));
+
+      // Notifikasi setelah berhasil dihapus
+      await Swal.fire({
+        title: "Terhapus!",
+        text: "Tugas berhasil dihapus.",
+        icon: "success",
+        background: "#ffffff",
+        color: "#333333",
+        timer: 1500,
+        showConfirmButton: false,
+      });
+    }
   };
 
   const editTask = async (task: Task): Promise<void> => {
